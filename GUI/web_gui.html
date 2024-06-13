@@ -321,8 +321,10 @@
 
         async function readSysLog() {
             if (!validateInputs()) return;
-            const data = await sendCommand('$CMD{GET_SYS_LOG},$PARAM{LIMIT=15}');
+
             const tableBody = document.getElementById('logTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
+            const data = await sendCommand('$CMD{GET_SYS_LOG},$PARAM{LIMIT=15}');
             data.data.forEach(log => {
                 const row = tableBody.insertRow();
                 const cellDate = row.insertCell(0);
@@ -336,12 +338,16 @@
 
         async function rebootSystem() {
             if (!validateInputs()) return;
-            const data = await sendCommand('$CMD{RESET_SYS}');
+            if (confirm('Are you sure you want to reboot the system? ')) {
+                const data = await sendCommand('$CMD{RESET_SYS}');
+            }
         }
 
         async function clearSysLog() {
             if (!validateInputs()) return;
-            const data = await sendCommand('$CMD{CLEAR_SYS_LOG}');
+            if (confirm('Are you sure you want to clear the system log?')) {
+                const data = await sendCommand('$CMD{CLEAR_SYS_LOG}');
+            }
         }
 
         function updateGPIOStatus(gpio) {

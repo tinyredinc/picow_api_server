@@ -21,7 +21,7 @@ A web GUI that implements the APIs for demonstration purposes can be found at "/
 4. (Optional) Enable storage write
     - Physically connect the GP22 pin to GND if you wish to enable storage write(implemented in boot.py).
     - By default, the CIRCUITPY drive is read-only to CircuitPython and writable by your computer. When the pin is connected, the CIRCUITPY drive becomes writable by CircuitPython and read-only by your computer.
-    - Enabling storage write will automatically activate Logger file mode. A "syslog.txt" file will be generated at the root path of your Pico W CIRCUITPY Drive. This log file can be accessed and operated via API commands.
+    - Enabling storage write will automatically activate file log mode. A "syslog.txt" file will be generated at the root path of your Pico W CIRCUITPY Drive. This log file can be accessed and operated via API commands.
 
 ## Dependency
 - Adafruit CircuitPython 9.x

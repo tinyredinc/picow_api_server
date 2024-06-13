@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RED PICOW API SERVER Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h2,
+        h3 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        code {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        pre {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>RED PICOW API SERVER Documentation</h2>
+        <h3>Pre-defined GPIO</h3>
+        <ul>
+            <li><strong>board.LED</strong>: Onboard LED</li>
+            <li><strong>board.GP22</strong>: IO Switch, connect to GND to enable write to storage.</li>
+            <li><strong>board.GP21</strong>: Digital Output, controlled via API command.</li>
+            <li><strong>board.GP20</strong>: Digital Output, controlled via API command.</li>
+            <li><strong>board.GP19</strong>: Digital Output, controlled via API command.</li>
+            <li><strong>board.GP18</strong>: Digital Input, reads True/False for high/low level.</li>
+            <li><strong>board.GP17</strong>: Digital Input, reads True/False for high/low level.</li>
+            <li><strong>board.GP16</strong>: Digital Input, reads True/False for high/low level.</li>
+            <li><strong>board.GP26_A0</strong>: Analog Input, reads an integer from 1 to 65535.</li>
+            <li><strong>board.GP27_A1</strong>: Analog Input, reads an integer from 1 to 65535.</li>
+            <li><strong>board.GP28_A2</strong>: Analog Input, reads an integer from 1 to 65535.</li>
+        </ul>
+        <h3>Authentication</h3>
+        <p>Each command request must include an authentication string in the following format:
+            <code>$AUTH{API_KEY=****}</code>. The provided API key is checked against the server's stored key to
+            authenticate the request. If the authentication fails, the server responds with an error message indicating
+            that authentication is required.
+        </p>
+        <p>Example Raw Request:</p>
+        <pre>Request: $AUTH{API_KEY=H7ts***rUfY}$CMD{SET_BOARD_LED=ON}</pre>
+        <h3>Parameter</h3>
+        <p>Parameters can be sent with command requests by including a parameter string in the following format:
+            <code>$PARAM{PARAM_KEY=PARAM_VAL}</code>. If there are multiple parameters, simply connect them with a
+            comma, like <code>$PARAM{PARAM1_KEY=PARAM1_VAL},$PARAM{PARAM2_KEY=PARAM2_VAL},...</code>
+        </p>
+        <p>Example Raw Request:</p>
+        <pre>Request: $AUTH{API_KEY=H7ts***rUfY}$CMD{GET_SYS_LOG}$PARAM{LIMIT=3}</pre>
+        <h3>Command</h3>
+        <table>
+            <!-- Command Table Rows -->
+
+            <tr>
+                <th>Command</th>
+                <th>Description</th>
+                <th>Response</th>
+            </tr>
+            <tr>
+                <td>$CMD{SET_BOARD_LED=ON}</td>
+                <td>Turn on onboard LED</td>
+                <td>
+                    <pre>{
+  "error_code": 0,
+  "error_msg": "",
+  "timestamp": timestamp,
+  "data": "BOARD_LED ON"
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>$CMD{SET_BOARD_LED=OFF}</td>
+                <td>Turn off onboard LED</td>
+                <td>
+                    <pre>{
+  "error_code": 0,
+  "error_msg": "",
+  "timestamp": timestamp,
+  "data": "BOARD_LED OFF"
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>$CMD{SET_BOARD_GP21=HIGH}</td>
+                <td>Set GP21 to high level (Digital Output)</td>
+                <td>
+                    <pre>{
+  "error_code": 0,
+  "error_msg": "",
+  "timestamp": timestamp,
+  "data": "BOARD_GP21 HIGH"
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>$CMD{SET_BOARD_GP21=LOW}</td>
+                <td>Set GP21 to low level (Digital Output)</td>
+                <td>
+                    <pre>{
+  "error_code": 0,
+  "error_msg": "",
+  "timestamp": timestamp,
+  "data": "BOARD_GP21 LOW"
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>$CMD{SET_BOARD_GP20=HIGH}</td>
+                <td>Set GP20 to high level (Digital Output)</td>
+                <td>
+                    <pre>{
+  "error_code": 0,
+  "error_msg": "",
+  "timestamp": timestamp,
+  "data": "BOARD_GP20 HIGH"
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>$CMD{SET_BOARD_GP20=LOW}</td>
+                <td>Set GP20 to low level (Digital Output)</td>
+                <td>
+                    <pre>{
+  "error_code": 0,
+  "error_msg": "",
+  "timestamp": timestamp,
+  "data": "BOARD_GP20 LOW"
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>$CMD{SET_BOARD_GP19=HIGH}</td>
+                <td>Set GP19 to high level (Digital Output)</td>
+                <td>
+                    <pre>{
+  "error_code": 0,
+  "error_msg": "",
+  "timestamp": timestamp,
+  "data": "BOARD_GP19 HIGH"
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>$CMD{SET_BOARD_GP19=LOW}</td>
+                <td>Set GP19 to low level (Digital Output)</td>
+                <td>
+                    <pre>{
+  "error_code": 0,
+  "error_msg": "",
+  "timestamp": timestamp,
+  "data": "BOARD_GP19 LOW"
+}</pre>
+                </td>
+            </tr>
+            <td>$CMD{GET_SYS_INFO}</td>
+            <td>Get system information</td>
+            <td>
+                <pre>{
+  "error_code": 0,
+  "error_msg": "",
+  "timestamp": timestamp,
+  "data": {
+    "cpu_freq": int,
+    "cpu_temp": float,
+    "ram_free": int,
+    "server_ip": str,
+    "server_port": int,
+    "GPIO": {
+      "board.LED": bool,
+      "board.GP28_A2": int,
+      "board.GP27_A1": int,
+      "board.GP26_A0": int,
+      "board.GP21": bool,
+      "board.GP20": bool,
+      "board.GP19": bool,
+      "board.GP18": bool,
+      "board.GP17": bool,
+      "board.GP16": bool
+    }
+  }
+}</pre>
+            </td>
+            </tr>
+            <tr>
+                <td>$CMD{RESET_SYS}</td>
+                <td>Reset the system</td>
+                <td>
+                    <pre>{
+  "error_code": 0,
+  "error_msg": "",
+  "timestamp": 1718046962,
+  "data": "System resetting"
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>$CMD{GET_SYS_LOG}</td>
+                <td>Retrieve the system log with optional LIMIT and LEVEL filters. EG.$CMD{GET_SYS_LOG},$PARAM{LIMIT=3},$PARAM{LEVEL=INFO}
+                </td>
+                <td>
+                    <pre>{
+  "error_msg": "",
+  "timestamp": 1718283329,
+  "data": [
+    {
+    "sysdt": "2024-06-11 20:06:01",
+    "level": "INFO",
+    "message": "$CMD{SET_BOARD_GP19=LOW}",
+    "group": "SYS"
+    },
+    {
+    "sysdt": "2024-06-11 20:05:57",
+    "level": "INFO",
+    "message": "$CMD{SET_BOARD_GP19=HIGH}",
+    "group": "SYS"
+    },
+    {
+    "sysdt": "2024-06-11 20:05:54",
+    "level": "INFO",
+    "message": "$CMD{SET_BOARD_GP19=LOW}",
+    "group": "SYS"
+    }
+  ],
+  "error_code": 0
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>$CMD{CLEAR_SYS_LOG}</td>
+                <td>Clear the system log.</td>
+                <td>
+                    <pre>{
+  "error_code": 0,
+  "error_msg": "",
+  "timestamp": timestamp,
+  "data": "System log cleared"
+}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>$CMD{RESET_SYS}</td>
+                <td>Perform a system reset.</td>
+                <td>
+                    <pre>VOID</pre>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

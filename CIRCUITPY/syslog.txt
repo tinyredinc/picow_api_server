@@ -1,0 +1,9 @@
+{"sysdt": "2024-06-13 14:46:23", "message": "$CMD{CLEAR_SYS_LOG}", "group": "SYS", "level": "INFO"}
+{"sysdt": "2024-06-13 14:46:27", "message": "$CMD{RESET_SYS}", "group": "SYS", "level": "INFO"}
+{"sysdt": "2020-01-01 00:00:05", "message": "System Started, Storage Readonly = False.", "group": "SYS", "level": "INFO"}
+{"sysdt": "2020-01-01 00:00:08", "message": "Failed to connect to Wi-Fi. Retrying in 3 seconds.", "group": "SYS", "level": "WARN"}
+{"sysdt": "2024-06-13 14:46:43", "message": "IP: 10.10.10.111", "group": "SYS", "level": "INFO"}
+{"sysdt": "2024-06-13 14:46:43", "message": "API Server: http://10.10.10.111:8080/", "group": "SYS", "level": "INFO"}
+{"sysdt": "2024-06-13 14:46:43", "message": "Server MemFree: 48544 bytes", "group": "SYS", "level": "INFO"}
+{"sysdt": "2024-06-13 14:46:53", "message": "$CMD{GET_SYS_LOG},$PARAM{LIMIT=15},$PARAM{LEVEL=None}", "group": "SYS", "level": "INFO"}
+{"sysdt": "2024-06-13 14:47:31", "message": "$CMD{RESET_SYS}", "group": "SYS", "level": "INFO"}
