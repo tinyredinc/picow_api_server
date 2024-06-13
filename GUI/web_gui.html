@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,35 +13,71 @@
             padding: 0;
             color: #333;
         }
+
         .container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 20px;
             background: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
+
         .column {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        .input-group, .gpio-group div, .sys-info div {
+
+        .sys-log {
+            grid-column: 1 / -1;
+            width: 100%;
+            overflow-x: auto; 
+        }
+
+        .sys-log table {
+            width: 100%; /* Ensures the table uses the full width available */
+            border-collapse: collapse; /* Removes space between borders */
+            margin-top: 20px; /* Adds space between the log header and the table */
+        }
+
+        .sys-log th {
+            border: 1px solid #ddd; /* Adds a light border for each cell */
+            padding: 8px; /* Adds padding inside cells */
+            text-align: left; /* Aligns text to the left */
+            background-color: #f8f9fa; /* A light background color for header cells */
+            color: #333; /* Dark color for text for contrast */
+        }
+
+        .sys-log td {
+            border: 1px solid #ddd; /* Adds a light border for each cell */
+            padding: 8px; /* Adds padding inside cells */
+            text-align: left; /* Aligns text to the left */
+        }
+
+        .input-group,
+        .gpio-group div,
+        .sys-info div {
             background: #fff;
             padding: 15px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+
         .input-label {
             font-weight: bold;
             display: inline-block;
             width: 110px;
         }
-        input[type="text"], input[type="password"], .readonly-input {
+
+        input[type="text"],
+        input[type="password"],
+        .readonly-input {
             width: calc(100% - 250px);
             padding: 10px;
             margin-top: 5px;
@@ -48,8 +85,10 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
         button {
             padding: 10px 20px;
+            margin-left: 15px;
             background-color: #007BFF;
             color: white;
             border: none;
@@ -57,13 +96,27 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
+
         button:hover {
             background-color: #0056b3;
         }
-        .sys-info h3, .gpio-group h3 {
+
+        .warning-button {
+            background-color: #ffc107; /* A typical 'warning' color */
+            color: black; /* Ensures text is readable on a lighter background */
+        }
+
+        .warning-button:hover {
+            background-color: #e0a800; /* A slightly darker shade for hover state */
+        }
+
+        .sys-info h3,
+        .gpio-group h3,
+        .sys-log h3 {
             border-bottom: 1px solid #eee;
             padding-bottom: 5px;
         }
+
         .switch {
             position: relative;
             display: inline-block;
@@ -72,6 +125,7 @@
             margin-left: 10px;
             border-radius: 5px;
         }
+
         .slider {
             position: absolute;
             cursor: pointer;
@@ -83,6 +137,7 @@
             transition: .4s;
             border-radius: 5px;
         }
+
         .slider:before {
             position: absolute;
             content: "";
@@ -94,17 +149,21 @@
             transition: .4s;
             border-radius: 5px;
         }
-        input:checked + .slider {
+
+        input:checked+.slider {
             background-color: #2196F3;
         }
-        input:focus + .slider {
+
+        input:focus+.slider {
             box-shadow: 0 0 1px #2196F3;
         }
-        input:checked + .slider:before {
+
+        input:checked+.slider:before {
             transform: translateX(15px);
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="grid">
@@ -123,7 +182,11 @@
                 </div>
                 <div class="button-group">
                     <button onclick="fetchSysInfo()">Fetch SysInfo</button>
+                    <button onclick="readSysLog()">Read SysLog</button>
+                    <button class="warning-button" onclick="clearSysLog()">Clear SysLog</button>
+                    <button class="warning-button" onclick="rebootSystem()">Reboot System</button>
                 </div>
+
                 <div class="sys-info" id="sys_info">
                     <h3>System Information</h3>
                     <div>CPU Temperature: <span id="cpu_temp">N/A</span> °C</div>
@@ -137,127 +200,183 @@
                 <div class="gpio-group" id="gpio_controls">
                     <h3>Pre-defined GPIO</h3>
                     <div class="gpio-status">
-            <span>[Onboard LED] <strong>LED</strong>:</span>
-            <span id="led_status">UNKNOWN</span>
-            <label class="switch">
-                <input type="checkbox" id="led_toggle" onchange="toggleGPIO('LED')">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="gpio-status">
-            <span>[Digital Output] <strong>GP21</strong>:</span>
-            <span id="gp21_status">UNKNOWN</span>
-            <label class="switch">
-                <input type="checkbox" id="gp21_toggle" onchange="toggleGPIO('GP21')">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="gpio-status">
-            <span>[Digital Output] <strong>GP20</strong>:</span>
-            <span id="gp20_status">UNKNOWN</span>
-            <label class="switch">
-                <input type="checkbox" id="gp20_toggle" onchange="toggleGPIO('GP20')">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="gpio-status">
-            <span>[Digital Output] <strong>GP19</strong>:</span>
-            <span id="gp19_status">UNKNOWN</span>
-            <label class="switch">
-                <input type="checkbox" id="gp19_toggle" onchange="toggleGPIO('GP19')">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="gpio-status">
-            <span>[Digital Input] <strong>GP18</strong>:</span>
-            <span id="gp18_status">UNKNOWN</span>
-        </div>
-        <div class="gpio-status">
-            <span>[Digital Input] <strong>GP17</strong>:</span>
-            <span id="gp17_status">UNKNOWN</span>
-        </div>
-        <div class="gpio-status">
-            <span>[Digital Input] <strong>GP16</strong>:</span>
-            <span id="gp16_status">UNKNOWN</span>
-        </div>
-        <div class="gpio-status">
-            <span>[Analog Input] <strong>GP26_A0</strong>:</span>
-            <input type="text" id="gp26_a0" class="readonly-input" readonly>
-        </div>
-        <div class="gpio-status">
-            <span>[Analog Input] <strong>GP27_A1</strong>:</span>
-            <input type="text" id="gp27_a1" class="readonly-input" readonly>
-        </div>
-        <div class="gpio-status">
-            <span>[Analog Input] <strong>GP28_A2</strong>:</span>
-            <input type="text" id="gp28_a2" class="readonly-input" readonly>
-        </div>
+                        <span>[Onboard LED] <strong>LED</strong>:</span>
+                        <span id="led_status">UNKNOWN</span>
+                        <label class="switch">
+                            <input type="checkbox" id="led_toggle" onchange="toggleGPIO('LED')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="gpio-status">
+                        <span>[Digital Output] <strong>GP21</strong>:</span>
+                        <span id="gp21_status">UNKNOWN</span>
+                        <label class="switch">
+                            <input type="checkbox" id="gp21_toggle" onchange="toggleGPIO('GP21')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="gpio-status">
+                        <span>[Digital Output] <strong>GP20</strong>:</span>
+                        <span id="gp20_status">UNKNOWN</span>
+                        <label class="switch">
+                            <input type="checkbox" id="gp20_toggle" onchange="toggleGPIO('GP20')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="gpio-status">
+                        <span>[Digital Output] <strong>GP19</strong>:</span>
+                        <span id="gp19_status">UNKNOWN</span>
+                        <label class="switch">
+                            <input type="checkbox" id="gp19_toggle" onchange="toggleGPIO('GP19')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="gpio-status">
+                        <span>[Digital Input] <strong>GP18</strong>:</span>
+                        <span id="gp18_status">UNKNOWN</span>
+                    </div>
+                    <div class="gpio-status">
+                        <span>[Digital Input] <strong>GP17</strong>:</span>
+                        <span id="gp17_status">UNKNOWN</span>
+                    </div>
+                    <div class="gpio-status">
+                        <span>[Digital Input] <strong>GP16</strong>:</span>
+                        <span id="gp16_status">UNKNOWN</span>
+                    </div>
+                    <div class="gpio-status">
+                        <span>[Analog Input] <strong>GP26_A0</strong>:</span>
+                        <input type="text" id="gp26_a0" class="readonly-input" readonly>
+                    </div>
+                    <div class="gpio-status">
+                        <span>[Analog Input] <strong>GP27_A1</strong>:</span>
+                        <input type="text" id="gp27_a1" class="readonly-input" readonly>
+                    </div>
+                    <div class="gpio-status">
+                        <span>[Analog Input] <strong>GP28_A2</strong>:</span>
+                        <input type="text" id="gp28_a2" class="readonly-input" readonly>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="sys-log">
+            <h3>System Log</h3>
+            <table id="logTable">
+                <thead>
+                    <tr>
+                        <th>Level</th>
+                        <th>Datetime</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+
     </div>
     <script>
-    function getAPIEndpoint() {
-        const serverIP = document.getElementById('server_ip').value;
-        const serverPort = document.getElementById('server_port').value;
-        return `http://${serverIP}:${serverPort}/cmd`;
-    }
+        function validateInputs() {
+            const serverIP = document.getElementById('server_ip').value.trim();
+            const serverPort = document.getElementById('server_port').value.trim();
+            const apiKey = document.getElementById('api_key').value.trim();
 
-    async function sendCommand(command) {
-        const apiKey = document.getElementById('api_key').value;
-        const rawRequest = `$AUTH{API_KEY=${apiKey}}${command}`;
-
-        const response = await fetch(getAPIEndpoint(), {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: rawRequest
-        });
-
-        const data = await response.json();
-        return data;
-    }
-
-    async function fetchSysInfo() {
-        const data = await sendCommand('$CMD{GET_SYS_INFO}');
-        document.getElementById('cpu_temp').innerText = data.data.cpu_temp;
-        document.getElementById('cpu_freq').innerText = data.data.cpu_freq;
-        document.getElementById('ram_free').innerText = data.data.ram_free;
-        document.getElementById('storage_ro').innerText = data.data.storage_ro;
-        document.getElementById('timestamp').innerText = new Date(data.timestamp * 1000).toLocaleString();
-        updateGPIOStatus(data.data.GPIO);
-    }
-
-    function updateGPIOStatus(gpio) {
-        document.getElementById('led_status').innerText = gpio['board.LED'] ? 'ON' : 'OFF';
-        document.getElementById('led_toggle').checked = gpio['board.LED'];
-        document.getElementById('gp21_status').innerText = gpio['board.GP21'] ? 'HIGH' : 'LOW';
-        document.getElementById('gp21_toggle').checked = gpio['board.GP21'];
-        document.getElementById('gp20_status').innerText = gpio['board.GP20'] ? 'HIGH' : 'LOW';
-        document.getElementById('gp20_toggle').checked = gpio['board.GP20'];
-        document.getElementById('gp19_status').innerText = gpio['board.GP19'] ? 'HIGH' : 'LOW';
-        document.getElementById('gp19_toggle').checked = gpio['board.GP19'];
-        document.getElementById('gp18_status').innerText = gpio['board.GP18'] ? 'HIGH' : 'LOW';
-        document.getElementById('gp17_status').innerText = gpio['board.GP17'] ? 'HIGH' : 'LOW';
-        document.getElementById('gp16_status').innerText = gpio['board.GP16'] ? 'HIGH' : 'LOW';
-        document.getElementById('gp26_a0').value = gpio['board.GP26_A0'];
-        document.getElementById('gp27_a1').value = gpio['board.GP27_A1'];
-        document.getElementById('gp28_a2').value = gpio['board.GP28_A2'];
-    }
-
-    async function toggleGPIO(gpioName) {
-        let command;
-        const gpioStatus = document.getElementById(gpioName.toLowerCase() + '_toggle').checked;
-        
-        if (gpioName === 'LED') {
-            command = `$CMD{SET_BOARD_LED=${gpioStatus ? 'ON' : 'OFF'}}`;
-        } else {
-            command = `$CMD{SET_BOARD_${gpioName}=${gpioStatus ? 'HIGH' : 'LOW'}}`;
+            if (!serverIP || !serverPort || !apiKey) {
+                alert('Please fill in all required fields: Server IP, Server Port, and API Key.');
+                return false;
+            }
+            return true;
         }
 
-        const data = await sendCommand(command);
-        console.log(data);
-        fetchSysInfo();
-    }
-</script>
+        function getAPIEndpoint() {
+            const serverIP = document.getElementById('server_ip').value;
+            const serverPort = document.getElementById('server_port').value;
+            return `http://${serverIP}:${serverPort}/cmd`;
+        }
+
+        async function sendCommand(command) {
+            const apiKey = document.getElementById('api_key').value;
+            const rawRequest = `$AUTH{API_KEY=${apiKey}}${command}`;
+
+            const response = await fetch(getAPIEndpoint(), {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: rawRequest
+            });
+
+            const data = await response.json();
+            return data;
+        }
+
+        async function fetchSysInfo() {
+            if (!validateInputs()) return;
+            const data = await sendCommand('$CMD{GET_SYS_INFO}');
+            document.getElementById('cpu_temp').innerText = data.data.cpu_temp;
+            document.getElementById('cpu_freq').innerText = data.data.cpu_freq;
+            document.getElementById('ram_free').innerText = data.data.ram_free;
+            document.getElementById('storage_ro').innerText = data.data.storage_ro;
+            document.getElementById('timestamp').innerText = new Date(data.timestamp * 1000).toLocaleString();
+            updateGPIOStatus(data.data.GPIO);
+        }
+
+        async function readSysLog() {
+            if (!validateInputs()) return;
+            const data = await sendCommand('$CMD{GET_SYS_LOG},$PARAM{LIMIT=15}');
+            const tableBody = document.getElementById('logTable').getElementsByTagName('tbody')[0];
+            data.data.forEach(log => {
+                const row = tableBody.insertRow();
+                const cellDate = row.insertCell(0);
+                cellDate.textContent = log.level;
+                const cellLevel = row.insertCell(1);
+                cellLevel.textContent = log.sysdt;
+                const cellMessage = row.insertCell(2);
+                cellMessage.textContent = log.message;
+            });
+        }
+
+        async function rebootSystem() {
+            if (!validateInputs()) return;
+            const data = await sendCommand('$CMD{RESET_SYS}');
+        }
+
+        async function clearSysLog() {
+            if (!validateInputs()) return;
+            const data = await sendCommand('$CMD{CLEAR_SYS_LOG}');
+        }
+
+        function updateGPIOStatus(gpio) {
+            document.getElementById('led_status').innerText = gpio['board.LED'] ? 'ON' : 'OFF';
+            document.getElementById('led_toggle').checked = gpio['board.LED'];
+            document.getElementById('gp21_status').innerText = gpio['board.GP21'] ? 'HIGH' : 'LOW';
+            document.getElementById('gp21_toggle').checked = gpio['board.GP21'];
+            document.getElementById('gp20_status').innerText = gpio['board.GP20'] ? 'HIGH' : 'LOW';
+            document.getElementById('gp20_toggle').checked = gpio['board.GP20'];
+            document.getElementById('gp19_status').innerText = gpio['board.GP19'] ? 'HIGH' : 'LOW';
+            document.getElementById('gp19_toggle').checked = gpio['board.GP19'];
+            document.getElementById('gp18_status').innerText = gpio['board.GP18'] ? 'HIGH' : 'LOW';
+            document.getElementById('gp17_status').innerText = gpio['board.GP17'] ? 'HIGH' : 'LOW';
+            document.getElementById('gp16_status').innerText = gpio['board.GP16'] ? 'HIGH' : 'LOW';
+            document.getElementById('gp26_a0').value = gpio['board.GP26_A0'];
+            document.getElementById('gp27_a1').value = gpio['board.GP27_A1'];
+            document.getElementById('gp28_a2').value = gpio['board.GP28_A2'];
+        }
+
+        async function toggleGPIO(gpioName) {
+            if (!validateInputs()) return;
+            let command;
+            const gpioStatus = document.getElementById(gpioName.toLowerCase() + '_toggle').checked;
+
+            if (gpioName === 'LED') {
+                command = `$CMD{SET_BOARD_LED=${gpioStatus ? 'ON' : 'OFF'}}`;
+            } else {
+                command = `$CMD{SET_BOARD_${gpioName}=${gpioStatus ? 'HIGH' : 'LOW'}}`;
+            }
+
+            const data = await sendCommand(command);
+            console.log(data);
+            fetchSysInfo();
+        }
+    </script>
 </body>
+
 </html>
