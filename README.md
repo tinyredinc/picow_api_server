@@ -1,5 +1,5 @@
-# Pico W API Server
-An API server system implemented using CircuitPython 9.x on a Raspberry Pi Pico W, designed to manage HTTP requests and responses between you and your Pico W board. This system can function as a test bench for your hardware modules or as a foundational skeleton for further development of your Pico W projects.
+# Red Pico W API Server
+Another API server system implemented using CircuitPython 9.x on a Raspberry Pi Pico W, designed to manage HTTP requests and responses between you and your Pico W board. This system can function as a test bench for your hardware modules or as a foundational skeleton for further development of your Pico W projects.
 
 A web GUI that implements the APIs for demonstration purposes can be found at "/GUI/web_gui.html":
 ![WEB GUI SCREENSHOT](./web_gui_screenshot.png)
