@@ -123,7 +123,7 @@ class ApiServer:
     def load_routes(self):
         
         """
-        Serves the main HTML page for the root directory.
+        Serves the main HTML page for the root directory(Web GUI).
         
         Parameters:
         request (Request): The incoming request object.
@@ -132,6 +132,20 @@ class ApiServer:
         Response: A response object with the content type set to 'text/html'.
         """
         @self.api_server.route("/")
+        def root_route_func(request: Request):  # pylint: disable=unused-argument
+            content = self.load_file("/page/web_gui.html")
+            return Response(request, content, content_type='text/html')
+        
+        """
+        Serves the main HTML page for the doc directory.
+        
+        Parameters:
+        request (Request): The incoming request object.
+
+        Returns:
+        Response: A response object with the content type set to 'text/html'.
+        """
+        @self.api_server.route("/doc")
         def root_route_func(request: Request):  # pylint: disable=unused-argument
             content = self.load_file("/page/documentation.html")
             return Response(request, content, content_type='text/html')
