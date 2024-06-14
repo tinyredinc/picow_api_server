@@ -37,27 +37,38 @@
         .sys-log {
             grid-column: 1 / -1;
             width: 100%;
-            overflow-x: auto; 
+            overflow-x: auto;
         }
 
         .sys-log table {
-            width: 100%; /* Ensures the table uses the full width available */
-            border-collapse: collapse; /* Removes space between borders */
-            margin-top: 20px; /* Adds space between the log header and the table */
+            width: 100%;
+            /* Ensures the table uses the full width available */
+            border-collapse: collapse;
+            /* Removes space between borders */
+            margin-top: 20px;
+            /* Adds space between the log header and the table */
         }
 
         .sys-log th {
-            border: 1px solid #ddd; /* Adds a light border for each cell */
-            padding: 8px; /* Adds padding inside cells */
-            text-align: left; /* Aligns text to the left */
-            background-color: #f8f9fa; /* A light background color for header cells */
-            color: #333; /* Dark color for text for contrast */
+            border: 1px solid #ddd;
+            /* Adds a light border for each cell */
+            padding: 8px;
+            /* Adds padding inside cells */
+            text-align: left;
+            /* Aligns text to the left */
+            background-color: #f8f9fa;
+            /* A light background color for header cells */
+            color: #333;
+            /* Dark color for text for contrast */
         }
 
         .sys-log td {
-            border: 1px solid #ddd; /* Adds a light border for each cell */
-            padding: 8px; /* Adds padding inside cells */
-            text-align: left; /* Aligns text to the left */
+            border: 1px solid #ddd;
+            /* Adds a light border for each cell */
+            padding: 8px;
+            /* Adds padding inside cells */
+            text-align: left;
+            /* Aligns text to the left */
         }
 
         .input-group,
@@ -86,6 +97,13 @@
             border-radius: 4px;
         }
 
+        .top-bar {
+            padding: 10px;
+            text-align: middle;
+            background-color: #f8f9fa;
+        }
+
+
         button {
             padding: 10px 20px;
             margin-left: 15px;
@@ -102,12 +120,15 @@
         }
 
         .warning-button {
-            background-color: #ffc107; /* A typical 'warning' color */
-            color: black; /* Ensures text is readable on a lighter background */
+            background-color: #ffc107;
+            /* A typical 'warning' color */
+            color: black;
+            /* Ensures text is readable on a lighter background */
         }
 
         .warning-button:hover {
-            background-color: #e0a800; /* A slightly darker shade for hover state */
+            background-color: #e0a800;
+            /* A slightly darker shade for hover state */
         }
 
         .sys-info h3,
@@ -168,6 +189,9 @@
     <div class="container">
         <div class="grid">
             <div class="column">
+                <div class="top-bar">
+                    <a href="#" onclick="openAPIDoc()">API Documentation</a>
+                </div>
                 <div class="input-group">
                     <span class="input-label">Server IP:</span>
                     <input type="text" id="server_ip" placeholder="Enter server IP">
@@ -190,7 +214,7 @@
                 <div class="sys-info" id="sys_info">
                     <h3>System Information</h3>
                     <div>CPU Temperature: <span id="cpu_temp">N/A</span> °C</div>
-                    <div>CPU Frequency: <span id="cpu_freq">N/A</span> Hz</div>
+                    <!--div>CPU Frequency: <span id="cpu_freq">N/A</span> Hz</div-->
                     <div>RAM Free: <span id="ram_free">N/A</span> Bytes</div>
                     <div>Storage Readonly: <span id="storage_ro">N/A</span></div>
                     <div>Timestamp: <span id="timestamp">N/A</span></div>
@@ -312,7 +336,7 @@
             if (!validateInputs()) return;
             const data = await sendCommand('$CMD{GET_SYS_INFO}');
             document.getElementById('cpu_temp').innerText = data.data.cpu_temp;
-            document.getElementById('cpu_freq').innerText = data.data.cpu_freq;
+            /* document.getElementById('cpu_freq').innerText = data.data.cpu_freq; */
             document.getElementById('ram_free').innerText = data.data.ram_free;
             document.getElementById('storage_ro').innerText = data.data.storage_ro;
             document.getElementById('timestamp').innerText = new Date(data.timestamp * 1000).toLocaleString();
@@ -348,6 +372,12 @@
             if (confirm('Are you sure you want to clear the system log?')) {
                 const data = await sendCommand('$CMD{CLEAR_SYS_LOG}');
             }
+        }
+        function openAPIDoc() {
+            if (!validateInputs()) return;
+            const serverIP = document.getElementById('server_ip').value;
+            const serverPort = document.getElementById('server_port').value;
+            window.open(`http://${serverIP}:${serverPort}/doc`, '_blank');
         }
 
         function updateGPIOStatus(gpio) {
