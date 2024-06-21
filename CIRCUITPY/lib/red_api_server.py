@@ -52,7 +52,7 @@ class ApiServer:
     Starts the API server, allowing it to accept connections on the configured IP address and port.
     
     Parameters:
-    VOID
+    poll_rate (float) - The interval between polls in seconds (default is 0.2 seconds).
     
     Returns:
     VOID
