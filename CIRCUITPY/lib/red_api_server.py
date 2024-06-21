@@ -36,6 +36,9 @@ class ApiServer:
         self.verbose_log = verbose_log
         self.debug = debug
         
+        self.poll_rate = 0
+        self.last_poll_ts = time.monotonic()
+        
         self.api_server = Server(self.pool, "/static", debug=self.debug)
         self.api_server.headers = {
             "X-Server": "RED PICOW API SERVER",
@@ -54,7 +57,8 @@ class ApiServer:
     Returns:
     VOID
     """
-    def start(self):
+    def start(self, poll_rate=0.2):
+        self.poll_rate = poll_rate
         self.api_server.start(self.ipv4, self.port)
     
     """
@@ -68,11 +72,13 @@ class ApiServer:
     VOID
     """
     def poll(self):
-        try:
-            self.api_server.poll()
-        except Exception as e:
-            print("Error:", e)
-            self.start()
+        if time.monotonic() - self.last_poll_ts > self.poll_rate:
+            try:
+                self.api_server.poll()
+                self.last_poll_ts = time.monotonic()
+            except Exception as e:
+                self.logger.add(f"{str(e)}","ERROR")
+        
     
     """
     ApiServer.init_hardwares()
@@ -151,7 +157,7 @@ class ApiServer:
         Response: A response object with the content type set to 'text/html'.
         """
         @self.api_server.route("/doc")
-        def root_route_func(request: Request):  # pylint: disable=unused-argument
+        def doc_route_func(request: Request):  # pylint: disable=unused-argument
             try:
                 content = self.load_file("/page/documentation.html")
                 return Response(request, content, content_type='text/html')
